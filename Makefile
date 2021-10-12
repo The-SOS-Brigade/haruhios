@@ -26,11 +26,13 @@ OBJS := $(SRCS:%.c=%.o)
 PHONY := __all
 __all: link
 
+export LD OBJS
+
 PHONY += link
 link: arch/$(SRCARCH)/arch.o
 	$(MAKE) link -C arch/$(SRCARCH)
 
-export AS GCC CFLAGS LD
+export AS GCC CFLAGS
 
 PHONY += arch
 arch:
