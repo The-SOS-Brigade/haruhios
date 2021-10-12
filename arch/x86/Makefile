@@ -7,4 +7,4 @@ arch:
 OBJS += arch.o
 link: $(OBJS)
 	$(LD) -Tlinker.ld -static $^
-	
+
