@@ -48,25 +48,6 @@ load_error:
 	call bios_print
 	jmp .
 
-bios_print:
-	pusha
-	mov $0x0E, %ah
-.Lloop_bios_print:
-	lodsb
-	int $0x10
-	cmpb $0, (%si)
-	jne .Lloop_bios_print
-	popa
-	ret
-
-bios_set_bgcolor:
-	pusha
-	mov $0x0B, %ah
-	xor %bh, %bh
-	int $0x10
-	popa
-	ret
-
 .Lload_error_message: .ascii "Couldn't load the second stage loader into memory"
 
 .org 0x1FE
