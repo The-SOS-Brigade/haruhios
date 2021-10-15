@@ -21,29 +21,15 @@ CFLAGS := -g -ffreestanding -falign-jumps -falign-functions -falign-labels \
 			-Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0
 
 SRCS :=
-OBJS := $(SRCS:%.c=%.o)
 
 PHONY := __all
-__all: link
+__all: build
 
-export LD OBJS
+export AS GCC LD SRCS CFLAGS
 
-PHONY += link
-link: arch/$(SRCARCH)/arch.o
-	$(MAKE) link -C arch/$(SRCARCH)
-
-export AS GCC CFLAGS
-
-PHONY += arch
-arch:
-	$(MAKE) $@ -C arch/$(SRCARCH)
-
-arch/$(SRCARCH)/arch.o:
-	@echo >&2 "***"; \
-	 echo >&2 "*** Make arch before building haruhios"; \
-	 echo >&2 "***"; \
-	 false
-	 
+PHONY += build
+build:
+	$(MAKE) -C arch/$(SRCARCH)
 
 PHONY += clean
 clean:
