@@ -1,10 +1,15 @@
 
 SRCS := $(wildcard boot/*.s)
+OBJS += $(SRCS:%.s=%.o)
+ASFLAGS :=
+LDFLAGS := -static
 
-arch:
-	$(AS) $(SRCS) -o $@.o
+__all: $(OBJS)
+	$(LD) -Tlinker.ld $^ $(LDFLAGS)
 
-OBJS += arch.o
-link: $(OBJS)
-	$(LD) -Tlinker.ld -static $^
+%.o: %.s
+	$(AS) $< -o $@ $(ASFLAGS)
+
+%.o: %.c
+	$(GCC) $< -c -o $@ $(CFLAGS)
 
