@@ -4,14 +4,16 @@ OUTPUT(haruhios.bin)
 
 SECTIONS {
 	. = 0x7C00;
-	__mbr_start = .;
 
-	.mbr_text : {
-		arch.o (.mbr_text)
+	.boot : {
+		__mbr_start = .;
+		boot/mbr.o (.boot)
+		__mbr_end = .;
+		ASSERT ((__mbr_end <= (__mbr_start + 0x200)), 
+					"MBR is larger than 512B");
+		* (.boot)
 	}
 
-	__mbr_end = .;
-	
 	.text : {
 		* (.text)
 	}

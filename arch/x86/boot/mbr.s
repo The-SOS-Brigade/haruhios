@@ -1,7 +1,7 @@
 
 BOOT_SIGNATURE = 0xAA55
 
-.section .mbr_text, "ax"
+.section .boot, "ax"
 .code16
 .org 0
 

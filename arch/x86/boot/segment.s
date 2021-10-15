@@ -1,5 +1,9 @@
 
+.section .boot
+
+.global gdt_desc
 .global __gdt_start, __gdt_end
+
 .global code_seg, data_seg
 
 __gdt_start:

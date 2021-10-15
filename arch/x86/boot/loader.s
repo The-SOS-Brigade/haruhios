@@ -1,5 +1,5 @@
 
-.section .text
+.section .boot
 .code16
 .org 0
 
