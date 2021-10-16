@@ -20,12 +20,16 @@ CFLAGS := -g -ffreestanding -falign-jumps -falign-functions -falign-labels \
 			-Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp \
 			-Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0
 
-SRCS :=
+this_makefile := $(lastword $(MAKEFILE_LIST))
+abs_srctree := $(realpath $(dir $(this_makefile)))
+
+SRCS := $(wildcard $(abs_srctree)/kernel/*.c)
+OBJS := $(SRCS:%.c=%.o)
 
 PHONY := __all
 __all: build
 
-export AS GCC LD SRCS CFLAGS
+export AS GCC LD OBJS CFLAGS
 
 PHONY += build
 build:
