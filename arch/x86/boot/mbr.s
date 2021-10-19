@@ -16,39 +16,60 @@ _start:
 .L0:
 	cli
 
-	xor %ax, %ax
-	mov %ax, %ds
-	mov %ax, %gs
-	mov %ax, %fs
-	mov %ax, %es
-	mov %ax, %ss
+	xorw %ax, %ax
+	movw %ax, %ds
+	movw %ax, %gs
+	movw %ax, %fs
+	movw %ax, %es
+	movw %ax, %ss
 
-	mov $__mbr_start, %bp
-	mov %bp, %sp
+	movw $__mbr_start, %bp
+	movw %bp, %sp
 
 	sti
 
-	inc %al
-	push %ax
-	mov $2, %ah
-	mov $0x7E00, %bx
-	xor %ch, %ch
-	mov $2, %cl
+	incb %al
+	pushw %ax
+	movb $2, %ah
+	movw $0x7E00, %bx
+	xorb %ch, %ch
+	movb $2, %cl
 	int $0x13
 	jc load_error
-	pop %bx
-	cmp %al, %bl
+	popw %bx
+	cmpb %al, %bl
 	jne load_error
 	jmp _loader
 
 load_error:
-	mov $4, %bl
+	movb $4, %bl
 	call bios_set_bgcolor
-	mov $.Lload_error_message, %si
+	movw $.Lload_error_message, %si
 	call bios_print
 	jmp .
 
-.Lload_error_message: .ascii "Couldn't load the second stage loader into memory"
+.Lload_error_message: .asciz "Couldn't load the second stage loader into memory"
+
+.global bios_print
+bios_print:
+        pusha
+        movb $0x0E, %ah
+.Lloop_bios_print:
+        lodsb
+        int $0x10
+        cmpb $0, (%si)
+        jne .Lloop_bios_print
+        popa
+        ret
+
+.global bios_set_bgcolor
+bios_set_bgcolor:
+        pusha
+        movb $0x0B, %ah
+        xorb %bh, %bh
+        int $0x10
+        popa
+        ret
 
 .org 0x1FE
 .word BOOT_SIGNATURE
