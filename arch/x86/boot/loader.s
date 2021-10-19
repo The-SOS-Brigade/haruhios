@@ -8,28 +8,38 @@
 
 _loader:
 	cli
-	
-	inb $0x92, %al
-	or $2, %al
-	outb %al, $0x92
 
 	lgdt gdt_desc
 	
-	mov %cr0, %eax
-	or $1, %eax
-	mov %eax, %cr0
+	movl %cr0, %eax
+	orl $1, %eax
+	movl %eax, %cr0
 
 	ljmp $code_seg, $pm_entry
 
 .code32
-pm_entry:
-	mov $data_seg, %eax
-	mov %eax, %ds
-	mov %eax, %ss
-	mov %eax, %es
-	mov %eax, %fs
-	mov %eax, %gs
+.extern kernel_entry
 
+pm_entry:
+	movw $data_seg, %ax
+	movw %ax, %ds
+	movw %ax, %ss
+	movw %ax, %es
+	movw %ax, %fs
+	movw %ax, %gs
+
+	inb $0x92, %al
+	orb $2, %al
+	outb %al, $0x92
+
+	movl $4, %eax
+	movl $50, %ecx
+	movl $0x100000, %edi
+	call ata_pio28_read
+	jc .Lread_error
+
+	call kernel_entry
 _exit:
+.Lread_error:
 	jmp _exit
 
