@@ -1,11 +1,9 @@
 ENTRY (_start)
 OUTPUT_FORMAT (binary)
-OUTPUT(haruhios.bin)
+OUTPUT (haruhios.bin)
 
 SECTIONS {
-	. = 0x7C00;
-
-	.boot : {
+	.boot 0x7C00 : AT(0) {
 		__mbr_start = .;
 		boot/mbr.o (.boot)
 		__mbr_end = .;
@@ -14,22 +12,22 @@ SECTIONS {
 		* (.boot)
 	}
 
-	.text : {
+	. = 0x100000;
+
+	.text : AT(0x800) {
 		* (.text)
 	}
 	
-	.data : {
+	.data : AT(LOADADDR(.text) + SIZEOF(.text)) {
 		* (.data)
 	}
 
-	.rodata : {
+	.rodata : AT(LOADADDR(.data) + SIZEOF(.data)) {
 		* (.rodata)
 	}
 
-	.bss : {
+	.bss : AT(LOADADDR(.data) + SIZEOF(.data)) {
 		* (.bss)
 	}
-
-
 }
 
