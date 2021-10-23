@@ -23,13 +23,14 @@ CFLAGS := -g -ffreestanding -falign-jumps -falign-functions -falign-labels \
 this_makefile := $(lastword $(MAKEFILE_LIST))
 abs_srctree := $(realpath $(dir $(this_makefile)))
 
-SRCS := $(wildcard $(abs_srctree)/kernel/*.c)
-OBJS := $(SRCS:%.c=%.o)
+SRCS	:= $(wildcard $(abs_srctree)/kernel/*.c)
+OBJS	:= $(SRCS:%.c=%.o)
+INCLUDE	:= -I$(abs_srctree)/include
 
 PHONY := __all
 __all: build
 
-export AS GCC LD OBJS CFLAGS
+export AS GCC LD OBJS CFLAGS INCLUDE
 
 PHONY += build
 build:
