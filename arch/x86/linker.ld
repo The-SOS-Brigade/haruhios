@@ -12,21 +12,20 @@ SECTIONS {
 		* (.boot)
 	}
 
-	. = 0x100000;
-
-	.text : AT(0x800) {
+	.text 1M : AT(0x800) {
 		* (.text)
 	}
-	
-	.data : AT(LOADADDR(.text) + SIZEOF(.text)) {
+
+	.data :  {
 		* (.data)
 	}
 
-	.rodata : AT(LOADADDR(.data) + SIZEOF(.data)) {
+	.rodata : {
 		* (.rodata)
 	}
 
-	.bss : AT(LOADADDR(.data) + SIZEOF(.data)) {
+	.bss : {
+		* (COMMON)
 		* (.bss)
 	}
 }
