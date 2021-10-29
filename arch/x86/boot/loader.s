@@ -27,6 +27,8 @@ pm_entry:
 	movw %ax, %es
 	movw %ax, %fs
 	movw %ax, %gs
+	movl $0x00FFFFFF, %ebp
+	movl %ebp, %esp
 
 	inb $0x92, %al
 	orb $2, %al
