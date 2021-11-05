@@ -1,10 +1,12 @@
 
 SRCS_S	:= $(wildcard boot/*.s)
-SRCS_C	:=$(wildcard boot/*.c) $(wildcard kernel/*.c)
+SRCS_C	:= $(wildcard boot/*.c) $(wildcard kernel/*.c)
 OBJS	+= $(SRCS_S:%.s=%.o) $(SRCS_C:%.c=%.o)
-ASFLAGS :=
-LDFLAGS := -static
-INCLUDE += -Iinclude
+
+ASFLAGS	:=
+LDFLAGS	:= -static
+CFLAGS	+= -masm=att
+INCLUDE	+= -Iinclude
 
 __all: $(OBJS)
 	$(LD) -Tlinker.ld $^ $(LDFLAGS)
