@@ -23,7 +23,7 @@ CFLAGS := -g -ffreestanding -falign-jumps -falign-functions -falign-labels \
 this_makefile := $(lastword $(MAKEFILE_LIST))
 abs_srctree := $(realpath $(dir $(this_makefile)))
 
-SRCS	:= $(wildcard $(abs_srctree)/kernel/*.c)
+SRCS	:= $(shell find $(abs_srctree)/kernel -type f -name '*.c')
 OBJS	:= $(SRCS:%.c=%.o)
 INCLUDE	:= -I$(abs_srctree)/include
 
