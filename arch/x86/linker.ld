@@ -12,7 +12,12 @@ SECTIONS {
 		* (.boot)
 	}
 
-	.text 1M : AT(0x800) {
+	. = 0xC0000000;
+
+	__kernel_start_phys = 0x100000;
+	__kernel_start = .;
+
+	.text : AT(0x800) {
 		* (.text)
 	}
 
@@ -28,5 +33,9 @@ SECTIONS {
 		* (COMMON)
 		* (.bss)
 	}
+
+	__kernel_end_phys = __kernel_start_phys + 
+					(__kernel_end - __kernel_start);
+	__kernel_end = .;
 }
 

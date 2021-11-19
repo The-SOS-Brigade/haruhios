@@ -10,7 +10,7 @@ _loader:
 	cli
 
 	lgdt gdt_desc
-	
+
 	movl %cr0, %eax
 	orl $1, %eax
 	movl %eax, %cr0
@@ -19,6 +19,8 @@ _loader:
 
 .code32
 .extern kernel_entry
+
+PGTABADDR = 0x1000000
 
 pm_entry:
 	movw $data_seg, %ax
@@ -36,9 +38,16 @@ pm_entry:
 
 	movl $4, %eax
 	movl $50, %ecx
-	movl $0x100000, %edi
+	movl $__kernel_start_phys, %edi
 	call ata_pio28_read
 	jc .Lread_error
+	movl $PGTABADDR, %edi
+	
+	call pg_mapk2hh
+
+	movl $PGTABADDR, %eax
+	call mmu_load_pagedir
+	call mmu_32bit_enable
 
 	call kernel_entry
 _exit:
