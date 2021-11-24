@@ -4,10 +4,25 @@ static size_t heap_get_blk_offset(struct heap_alloc_desc *heap, void *ptr)
 {
 	size_t offset = (ptr - heap->base) / heap->blk_size;
 
-	if (offset > heap->total_entries)
+	if (offset >= heap->total_entries)
 		return -1;
 
 	return offset;
+}
+
+static void alloc_blocks(struct heap_alloc_desc *h, size_t offset, size_t n)
+{
+	u8 attr = HEAP_BLOCK_START | HEAP_BLOCK_USED;
+
+	size_t i = offset;
+
+	for (; i < n + offset; ++i) {
+		h->blk[i] = attr;
+		attr = HEAP_BLOCK_USED;
+	}
+
+	h->blk[i-1] |= HEAP_BLOCK_END;
+
 }
 
 void *malloc(struct heap_alloc_desc *heap, size_t size)
@@ -15,15 +30,17 @@ void *malloc(struct heap_alloc_desc *heap, size_t size)
 	size_t blocks;
 	void *ptr = NULL;
 
-	size += heap->blk_size - (size % heap->blk_size);
+	if (size % heap->blk_size)
+		size += heap->blk_size - (size % heap->blk_size);
+
 	blocks = size / heap->blk_size;
 
-	if (!blocks)
+	if (!blocks || blocks >= heap->total_entries)
 		return NULL;
 
 	size_t i;
 
-	for (i = 0; i < heap->total_entries; ++i) {
+	for (i = 0; i < heap->total_entries - blocks; ++i) {
 		size_t j;
 
 		for (j = 0; j < blocks; ++j) {
@@ -34,20 +51,11 @@ void *malloc(struct heap_alloc_desc *heap, size_t size)
 		}
 
 		if (j == blocks) {
+			alloc_blocks(heap, i, blocks);
 			ptr = (void *)(heap->base + heap->blk_size * i);
 			break;
 		}
 	}
-
-	size_t blk_offset = i;
-	u8 attr = HEAP_BLOCK_START | HEAP_BLOCK_USED;
-
-	for (; i < blk_offset + blocks; ++i) {
-		heap->blk[i] = attr;
-		attr = HEAP_BLOCK_USED;
-	}
-
-	heap->blk[i-1] |= HEAP_BLOCK_END;
 
 	return ptr;
 }
