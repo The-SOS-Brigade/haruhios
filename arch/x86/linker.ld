@@ -5,7 +5,7 @@ OUTPUT (haruhios.bin)
 SECTIONS {
 	.boot 0x7C00 : AT(0) {
 		__mbr_start = .;
-		boot/mbr.o (.boot)
+		* (__mbr)
 		__mbr_end = .;
 		ASSERT ((__mbr_end <= (__mbr_start + 0x200)), 
 					"MBR is larger than 512B");
@@ -34,8 +34,18 @@ SECTIONS {
 		* (.bss)
 	}
 
-	__kernel_end_phys = __kernel_start_phys + 
+	__kernel_end_phys = __kernel_start_phys +
 					(__kernel_end - __kernel_start);
 	__kernel_end = .;
+
+	. = 0xC1000000;
+	__pgt_start_phys = 0x1000000;
+	__pgt_start = .;
+
+	. = __pgt_start + 0x401000;
+
+	__pgt_end_phys = __pgt_start_phys + 0x401000;
+	__pgt_end = .;
+
 }
 

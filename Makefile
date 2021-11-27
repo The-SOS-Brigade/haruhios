@@ -39,6 +39,7 @@ build:
 PHONY += clean
 clean:
 	find . -name '*.o' -delete
+	find . -name '*.i' -delete
 
 .PHONY: $(PHONY)
 

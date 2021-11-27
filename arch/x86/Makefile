@@ -1,9 +1,8 @@
+SRCS_S	:= $(shell find . -type f -name '*.S')
+SRCS_C	:= $(boot/*.c) $(shell find kernel -type f -name '*.c')
 
-SRCS_S	:= $(wildcard boot/*.s)
-SRCS_C	:= $(wildcard boot/*.c) $(wildcard kernel/*.c)
-OBJS	+= $(SRCS_S:%.s=%.o) $(SRCS_C:%.c=%.o)
+OBJS	+= $(SRCS_S:%.S=%.o) $(SRCS_C:%.c=%.o)
 
-ASFLAGS	:=
 LDFLAGS	:= -static
 CFLAGS	+= -masm=att
 INCLUDE	+= -Iinclude
@@ -11,8 +10,9 @@ INCLUDE	+= -Iinclude
 __all: $(OBJS)
 	$(LD) -Tlinker.ld $^ $(LDFLAGS)
 
-%.o: %.s
-	$(AS) $< -o $@ $(ASFLAGS)
+%.o: %.S
+	$(GCC) -E $< -o $(patsubst %.S, %.i, $<) $(CFLAGS) $(INCLUDE)
+	$(AS) $(patsubst %.S, %.i, $<) -o $@ $(ASFLAGS)
 
 %.o: %.c
 	$(GCC) $< -c -o $@ $(CFLAGS) $(INCLUDE)
