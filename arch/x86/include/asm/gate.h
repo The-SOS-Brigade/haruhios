@@ -12,6 +12,9 @@
 
 #define IDT_GATES	0x100
 
+#define INTEL_TRAPS 0x20
+#define FREE_GATES (IDT_GATES - INTEL_TRAPS)
+
 struct gate_struct {
 	u16 offset0;
 	u16 segment;
@@ -26,6 +29,8 @@ struct idtr_desc {
 	u16 limit;
 	u32 base;
 } __attribute__((packed));
+
+void prepare_gates(void);
 
 #endif
 

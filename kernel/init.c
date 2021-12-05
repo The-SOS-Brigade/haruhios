@@ -3,7 +3,7 @@
 #include <haruhi/console.h>
 #include <haruhi/acpi.h>
 #include <haruhi/string.h>
-#include <asm/int.h>
+#include <haruhi/int.h>
 
 void kernel_entry(void)
 {

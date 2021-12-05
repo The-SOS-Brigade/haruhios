@@ -1,8 +1,6 @@
+#include <haruhi/int.h>
 #include <asm/gate.h>
 #include <asm/int.h>
-
-#define INTEL_TRAPS 0x20
-#define FREE_GATES (IDT_GATES - INTEL_TRAPS)
 
 #define CODE_SEG 0x8
 
@@ -20,7 +18,7 @@ static void register_all_interrupts(void)
 		register_int(i, int_default, INT_GATE);
 }
 
-void interrupt_init(void)
+void prepare_gates(void)
 {
 	for (size_t i = 0; i < IDT_GATES; ++i) {
 		idt_gates[i] = (struct gate_struct){
@@ -38,9 +36,7 @@ void interrupt_init(void)
 	struct idtr_desc idtr;
 	idtr.limit = sizeof(idt_gates) - 1;
 	idtr.base = (u32)idt_gates;
-
 	load_idt(idtr);
-	enable_interrupts();
 }
 
 void register_int(size_t entry, void *addr, u8 type)
