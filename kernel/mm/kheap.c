@@ -1,4 +1,5 @@
 #include <haruhi/memory/kheap.h>
+#include <haruhi/string.h>
 
 struct heap_alloc_desc kheap;
 
@@ -15,6 +16,18 @@ void kheap_init(void)
 void *kmalloc(size_t size)
 {
 	return malloc(&kheap, size);
+}
+
+void *kzalloc(size_t size)
+{
+	void *ptr;
+	ptr = malloc(&kheap, size);
+
+	if (!ptr)
+		return NULL;
+
+	memset(ptr, 0, size);
+	return ptr;
 }
 
 void kfree(void *ptr)
