@@ -2,6 +2,11 @@
 #include <haruhi/types.h>
 #include <haruhi/string.h>
 #include <asm/acpi.h>
+#include <asm/io.h>
+
+struct acpi_rsdp_desc *_rsdp;
+struct acpi_fadt_desc *_fadt;
+struct acpi_rsdt_desc *_rsdt;
 
 static int rsdp_is_valid(struct acpi_rsdp_desc *rsdp)
 {
@@ -47,7 +52,7 @@ static void *locate_rsdp(void)
 
 	/* Search in main BIOS region */
 	for (char *addr = start_addr; addr < end_addr; ++addr) {
-		if(strcmp(signature, addr) == 0) {
+		if (strcmp(signature, addr) == 0) {
 			rsdp = (void *)addr;
 			goto out;
 		}
@@ -57,29 +62,49 @@ out:
 	return rsdp;
 }
 
+static struct acpi_fadt_desc *locate_fadt(struct acpi_rsdt_desc *rsdt)
+{
+	struct acpi_table_header *rsdt_hdr = &rsdt->hdr;
+	size_t entries = (rsdt_hdr->length - sizeof(rsdt_hdr)) / 4;
+
+	struct acpi_table_header *header = NULL;
+
+	for (size_t i = 0; i < entries; ++i) {
+		header = (struct acpi_table_header *)((u32 *)&rsdt->table_ptr)[i];
+		if (strcmp(ACPI_FADT_SIGNATURE, header->signature) == 0)
+			return (struct acpi_fadt_desc *)header;
+	}
+	return NULL;
+}
+
 int acpi_init(void)
 {
 	int res = 0;
-	struct acpi_rsdp_desc *rsdp;
-	struct acpi_table_header *rsdt;
 
-	rsdp = (struct acpi_rsdp_desc *)locate_rsdp();
+	_rsdp = (struct acpi_rsdp_desc *)locate_rsdp();
 
-	if (rsdp == NULL) {
+	if (_rsdp == NULL) {
 		res = -1;
 		goto out;
 	}
 
-	if(!rsdp_is_valid(rsdp)) {
+	if (!rsdp_is_valid(_rsdp)) {
 		res = -1;
 		goto out;
 	}
 
-	rsdt = (struct acpi_table_header *)rsdp->rsdt_addr;
+	_rsdt = (struct acpi_rsdt_desc *)_rsdp->rsdt_addr;
 	char *signature = ACPI_RSDT_SIGNATURE;
 
-	if(strcmp(signature, rsdt->signature) != 0
-				|| !table_is_valid(rsdt)) {
+	if (strcmp(signature, _rsdt->hdr.signature) != 0
+				|| !table_is_valid(&_rsdt->hdr)) {
+		res = -1;
+		goto out;
+	}
+
+	_fadt = locate_fadt(_rsdt);
+
+	if (_fadt == NULL || !table_is_valid(&_fadt->hdr)) {
 		res = -1;
 		goto out;
 	}
