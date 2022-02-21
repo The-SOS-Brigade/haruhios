@@ -23,23 +23,39 @@ CFLAGS := -g -ffreestanding -falign-jumps -falign-functions -falign-labels \
 this_makefile := $(lastword $(MAKEFILE_LIST))
 abs_srctree := $(realpath $(dir $(this_makefile)))
 
-SRCS	:= $(shell find $(abs_srctree)/kernel -type f -name '*.c')
-OBJS	:= $(SRCS:%.c=%.o)
-INCLUDE	:= -I$(abs_srctree)/include
+SRCS		:= $(shell find $(abs_srctree)/kernel -type f -name '*.c')
+KERNEL_OBJS	:= $(SRCS:%.c=%.o)
+INCLUDE		:= -I$(abs_srctree)/include
+BUILDDIR	:= build
+
+MKDIR		:= mkdir
+FIND		:= find
 
 PHONY := __all
 __all: build
 
-export AS GCC LD OBJS CFLAGS INCLUDE
+export AS ARCH GCC LD KERNEL_OBJS CFLAGS INCLUDE BUILDDIR
 
 PHONY += build
 build:
+	$(MKDIR) -p arch/$(SRCARCH)/$(BUILDDIR)
 	$(MAKE) -C arch/$(SRCARCH)
+
+export abs_srctree
+
+PHONY += install_loop
+install_loop:
+ifneq ($(shell id -u), 0)
+	@echo "Run with root privileges"
+	@exit 1
+endif
+	$(MAKE) -C arch/$(SRCARCH) $@
 
 PHONY += clean
 clean:
-	find . -name '*.o' -delete
-	find . -name '*.i' -delete
+	$(MAKE) -C arch/$(SRCARCH) $@
+	$(FIND) . -name '*.o' -delete
+	$(FIND) . -name '*.i' -delete
 
 .PHONY: $(PHONY)
 

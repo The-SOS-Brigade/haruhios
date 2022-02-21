@@ -15,6 +15,8 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 
 typedef _Bool bool;
+#define false 0
+#define true  1
 
 typedef __builtin_va_list va_list;
 #define va_start(v, n) __builtin_va_start(v, n)
@@ -22,4 +24,3 @@ typedef __builtin_va_list va_list;
 #define va_arg(v, t) __builtin_va_arg(v, t)
 
 #endif
-

@@ -93,6 +93,8 @@ int acpi_init(void)
 		goto out;
 	}
 
+	printk("ACPI: RSDP revision %d\n", _rsdp->revision);
+
 	_rsdt = (struct acpi_rsdt_desc *)_rsdp->rsdt_addr;
 	char *signature = ACPI_RSDT_SIGNATURE;
 
@@ -102,6 +104,8 @@ int acpi_init(void)
 		goto out;
 	}
 
+	printk("ACPI: RSDT revision %d\n", _rsdt->hdr.revision);
+
 	_fadt = locate_fadt(_rsdt);
 
 	if (_fadt == NULL || !table_is_valid(&_fadt->hdr)) {
@@ -109,7 +113,8 @@ int acpi_init(void)
 		goto out;
 	}
 
+	printk("ACPI: FADT revision %d\n", _fadt->hdr.revision);
+
 out:
 	return res;
 }
-

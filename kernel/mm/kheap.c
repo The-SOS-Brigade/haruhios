@@ -8,6 +8,7 @@ void kheap_init(void)
 	kheap.blk_size = CONFIG_KHEAP_BLOCK_SIZE;
 	kheap.total_entries = CONFIG_KHEAP_ENTRIES;
 	kheap.base = (void *)CONFIG_KHEAP_BASE;
+	kheap.blk = (u8 *)0x1401000;
 
 	for (size_t i = 0; i < kheap.total_entries; ++i)
 		kheap.blk[i] = HEAP_BLOCK_FREE;

@@ -125,5 +125,10 @@ static inline struct acpi_fadt_desc *get_fadt(void)
 	return _fadt;
 }
 
+static inline u8 acpi_get_revision(void)
+{
+	return get_fadt()->hdr.revision;
+}
+
 #endif
 

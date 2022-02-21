@@ -1,14 +1,11 @@
-
-.section .boot
+.section .boot.entry
 .code16
-.org 0
 
 .type _loader STT_FUNC
 .global _loader
 
 _loader:
 	cli
-
 	lgdt gdt_desc
 
 	movl %cr0, %eax
@@ -17,10 +14,16 @@ _loader:
 
 	ljmp $code_seg, $pm_entry
 
+.section .boot
 .code32
+.extern __kernel_start
 .extern kernel_entry
+.extern pg_mapk2hh
+
+#include <asm/bpb.h>
 
 PGTABADDR = 0x1000000
+kernel_filename: .ascii "KERNEL  SYS"
 
 pm_entry:
 	movw $data_seg, %ax
@@ -29,28 +32,52 @@ pm_entry:
 	movw %ax, %es
 	movw %ax, %fs
 	movw %ax, %gs
-	movl $0x00FFFFFF, %ebp
+	movl $0x07C00, %ebp
 	movl %ebp, %esp
 
 	inb $0x92, %al
 	orb $2, %al
 	outb %al, $0x92
 
-	movl $4, %eax
-	movl $50, %ecx
+	movl EBPB_ROOT_CLUSTER, %eax
+	movl $0x9000, %edi
+	call read_cluster
+	jc .Lread_error
+search_kernel:
+	xorl %ecx, %ecx
+	movw $8, %cx
+	cld
+1:
+	pushl %ecx
+	movw $11, %cx
+	movl $kernel_filename, %esi
+	pushl %edi
+	repe cmpsb
+	popl %edi
+	popl %ecx
+	je load_kernel
+	addl $32, %edi
+	loop 1b
+.Lkernel_not_found:
+	jmp _exit
+load_kernel:
+	movl 20(%edi), %eax
+	shll $16, %eax
+	movw 26(%edi), %ax
 	movl $__kernel_start_phys, %edi
-	call ata_pio28_read
+	call read_file
 	jc .Lread_error
 	movl $PGTABADDR, %edi
-	
+
 	call pg_mapk2hh
 
 	movl $PGTABADDR, %eax
 	call mmu_load_pagedir
 	call mmu_32bit_enable
 
-	call kernel_entry
-_exit:
+	call __kernel_start
+
 .Lread_error:
+_exit:
 	jmp _exit
 

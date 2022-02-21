@@ -4,8 +4,9 @@
 #include <haruhi/acpi.h>
 #include <haruhi/string.h>
 #include <haruhi/int.h>
+#include <haruhi/kbc.h>
 
-void kernel_entry(void)
+void __attribute__((section(".text.entry"))) kernel_entry(void)
 {
 	console_init();
 	kheap_init();
@@ -14,7 +15,8 @@ void kernel_entry(void)
 	if(acpi_init())
 		printk("ACPI: initialization failed\n");
 
+	kbc_init();
 	printk("haruhios\n");
-	return;
+	asm volatile("1: jmp 1b");
 }
 
