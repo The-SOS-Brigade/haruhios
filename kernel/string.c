@@ -25,19 +25,22 @@ void *memset(void *dest, int c, size_t n)
 	return ptr;
 }
 
-int strcmp(const char *str0, const char *str1)
+int strcmp(char *str0, const char *str1)
 {
-	size_t i;
-	size_t len = strlen(str0);
-	int tmp = 0;
+	return strncmp(str0, str1, strlen(str0));
+}
 
-	for (i = 0; i < len; ++i) {
-		tmp = str0[i] - str1[i];
-		if (tmp != 0)
-			break;
+char *strcpy(char *dest, const char *src)
+{
+	size_t len = strlen(src);
+
+	for (size_t i = 0; i < len; ++i) {
+		dest[i] = src[i];
 	}
 
-	return tmp;
+	dest[len+1] = '\0';
+
+	return dest;
 }
 
 size_t strlen(const char *str)
@@ -64,7 +67,8 @@ size_t strcnt(const char *str, const char *substr)
 {
 	size_t count = 0;
 
-	while ((str = strstr(++str, substr)) != NULL) {
+	while ((str = strstr(str, substr)) != NULL) {
+		++str;
 		++count;
 	}
 
