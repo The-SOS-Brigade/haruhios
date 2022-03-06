@@ -27,6 +27,18 @@ static inline void outw(u16 port, u16 data)
 	__asm__ __volatile__("outw %w0, %w1" :: "a" (data), "dN" (port));
 }
 
+static inline u32 inl(u16 port)
+{
+	u32 data;
+	__asm__ __volatile__("inl %w1, %k0" : "=a" (data) : "dN" (port));
+	return data;
+}
+
+static inline void outl(u16 port, u32 data)
+{
+	__asm__ __volatile__("outl %k0, %w1" :: "a" (data), "dN" (port));
+}
+
 static inline void io_wait(void)
 {
 	__asm__ __volatile__("outb %b0, %1" :: "a"(0), "dN"(0x80));
