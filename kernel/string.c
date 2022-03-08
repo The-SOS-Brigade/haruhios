@@ -38,7 +38,7 @@ char *strcpy(char *dest, const char *src)
 		dest[i] = src[i];
 	}
 
-	dest[len+1] = '\0';
+	dest[len] = '\0';
 
 	return dest;
 }
