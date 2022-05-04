@@ -49,7 +49,7 @@ install_loop:
 	-$(UMOUNT) -d $(LOOPDEV)
 	$(DD) if=/dev/zero of=$(BUILDDIR)/hd.img bs=516096c count=1000
 	$(DD) if=$(BUILDDIR)/mbr.img of=$(BUILDDIR)/hd.img bs=512 count=1 conv=notrunc
-	$(FDISK) -C1000 -S63 -H16 $(BUILDDIR)/hd.img
+	printf "n\np\n1\n2048\n\nt\nb\na\nw\n" | $(FDISK) -C1000 -S63 -H16 $(BUILDDIR)/hd.img
 	$(LOSETUP) -o1048576 $(LOOPDEV) $(BUILDDIR)/hd.img
 	$(MKFS) -F32 -n "HARUHIOS" -s1 -h2048 -r512 $(LOOPDEV)
 	$(DD) if=$(BUILDDIR)/vbr.img of=$(LOOPDEV) bs=1 count=3 seek=0 conv=notrunc
