@@ -18,7 +18,8 @@ endif
 CFLAGS := -g -ffreestanding -falign-jumps -falign-functions -falign-labels \
 			-falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions \
 			-Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp \
-			-Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0
+			-Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0	\
+			-std=gnu11
 
 this_makefile := $(lastword $(MAKEFILE_LIST))
 abs_srctree := $(realpath $(dir $(this_makefile)))
