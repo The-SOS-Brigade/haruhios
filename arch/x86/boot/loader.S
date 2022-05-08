@@ -39,6 +39,8 @@ pm_entry:
 	orb $2, %al
 	outb %al, $0x92
 
+	call prepare_canary
+
 	movl EBPB_ROOT_CLUSTER, %eax
 	movl $0x9000, %edi
 	call read_cluster
@@ -80,4 +82,19 @@ load_kernel:
 .Lread_error:
 _exit:
 	jmp _exit
+
+prepare_canary:
+#if CONFIG_X86_CPUID
+	movl $1, %eax
+	xorl %ecx, %ecx
+	cpuid
+	testl $0x40000000, %ecx
+	jz 2f
+1:
+	rdrand %eax
+	jnc 1b
+	movl %eax, 0x500
+2:
+#endif
+	ret
 

@@ -8,7 +8,7 @@ KERNEL_OBJS	+= $(KERNEL_SRCS_S:%.S=%.o) $(KERNEL_SRCS_C:%.c=%.o)
 
 LDFLAGS	:= -static
 CFLAGS	+= -masm=att
-INCLUDE	+= -Iinclude
+INCLUDE	+= -Iinclude -include "asm/config.h"
 
 DD	:= dd
 MKDIR	:= mkdir

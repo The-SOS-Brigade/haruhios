@@ -19,14 +19,14 @@ CFLAGS := -g -ffreestanding -falign-jumps -falign-functions -falign-labels \
 			-falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions \
 			-Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp \
 			-Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0	\
-			-std=gnu11
+			-std=gnu11 -fstack-protector-strong
 
 this_makefile := $(lastword $(MAKEFILE_LIST))
 abs_srctree := $(realpath $(dir $(this_makefile)))
 
 SRCS		:= $(shell find $(abs_srctree)/kernel -type f -name '*.c')
 KERNEL_OBJS	:= $(SRCS:%.c=%.o)
-INCLUDE		:= -I$(abs_srctree)/include
+INCLUDE		:= -I$(abs_srctree)/include -include "haruhi/config.h"
 BUILDDIR	:= build
 
 MKDIR		:= mkdir
