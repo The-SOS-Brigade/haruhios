@@ -47,7 +47,7 @@ static void *locate_rsdp(void)
 		}
 	}
 
-	start_addr	= (char *)0xF0000;
+	start_addr	= (char *)0xE0000;
 	end_addr	= (char *)0xFFFFF;
 
 	/* Search in main BIOS region */
