@@ -35,13 +35,14 @@ static void *locate_rsdp(void)
 {
 	char *signature		= ACPI_RSDP_SIGNATURE;
 	short *ebda_seg_ptr	= (short *)0x40E;
-	char *start_addr	= (char *)(*ebda_seg_ptr << 1);
+	char *start_addr	= (char *)(*ebda_seg_ptr << 4);
 	char *end_addr		= (char *)(start_addr + 0x400);
 	void *rsdp 		= NULL;
 
 	/* Search in EBDA region */
 	for (char *addr = start_addr; addr < end_addr; ++addr) {
-		if(strcmp(signature, addr) == 0) {
+		if(!strncmp(signature, addr, 8)
+		   && rsdp_is_valid((struct acpi_rsdp_desc *)addr)) {
 			rsdp = (void *)addr;
 			goto out;
 		}
@@ -52,7 +53,8 @@ static void *locate_rsdp(void)
 
 	/* Search in main BIOS region */
 	for (char *addr = start_addr; addr < end_addr; ++addr) {
-		if (strcmp(signature, addr) == 0) {
+		if (!strncmp(signature, addr, 8)
+		    && rsdp_is_valid((struct acpi_rsdp_desc *)addr)) {
 			rsdp = (void *)addr;
 			goto out;
 		}
@@ -71,7 +73,8 @@ static struct acpi_fadt_desc *locate_fadt(struct acpi_rsdt_desc *rsdt)
 
 	for (size_t i = 0; i < entries; ++i) {
 		header = (struct acpi_table_header *)((u32 *)&rsdt->table_ptr)[i];
-		if (strcmp(ACPI_FADT_SIGNATURE, header->signature) == 0)
+		if (!strncmp(ACPI_FADT_SIGNATURE, header->signature, 4)
+		    && table_is_valid(header))
 			return (struct acpi_fadt_desc *)header;
 	}
 	return NULL;
@@ -84,11 +87,7 @@ int acpi_init(void)
 	_rsdp = (struct acpi_rsdp_desc *)locate_rsdp();
 
 	if (_rsdp == NULL) {
-		res = -1;
-		goto out;
-	}
-
-	if (!rsdp_is_valid(_rsdp)) {
+		printk("ACPI: RSDP not found\n");
 		res = -1;
 		goto out;
 	}
@@ -98,7 +97,7 @@ int acpi_init(void)
 	_rsdt = (struct acpi_rsdt_desc *)_rsdp->rsdt_addr;
 	char *signature = ACPI_RSDT_SIGNATURE;
 
-	if (strcmp(signature, _rsdt->hdr.signature) != 0
+	if (strncmp(signature, _rsdt->hdr.signature, 4) != 0
 				|| !table_is_valid(&_rsdt->hdr)) {
 		res = -1;
 		goto out;
@@ -108,7 +107,8 @@ int acpi_init(void)
 
 	_fadt = locate_fadt(_rsdt);
 
-	if (_fadt == NULL || !table_is_valid(&_fadt->hdr)) {
+	if (_fadt == NULL) {
+		printk("ACPI: FADT not found\n");
 		res = -1;
 		goto out;
 	}
