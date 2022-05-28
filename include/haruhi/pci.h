@@ -8,6 +8,7 @@ void pci_init(void);
 u8 get_pci_class(u8 bus, u8 device, u8 function);
 u8 get_pci_subclass(u8 bus, u8 device, u8 function);
 u8 get_pci_header_type(u8 bus, u8 device, u8 function);
+u8 get_pci_progif(u8 bus, u8 device, u8 function);
 u8 get_bridge_secondary_bus(u8 bus, u8 device, u8 function);
 u32 pci_read32_config(u8 bus, u8 device, u8 function, u8 offset);
 

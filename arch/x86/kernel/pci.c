@@ -28,10 +28,16 @@ u8 get_pci_header_type(u8 bus, u8 device, u8 function)
 	return (pci_read32_config(bus, device, function, 0xC) >> 0x10) & 0xFF;
 }
 
+u8 get_pci_progif(u8 bus, u8 device, u8 function)
+{
+	return (pci_read32_config(bus, device, function, 0x8) >> 0x8) & 0xFF;
+}
+
 u8 get_bridge_secondary_bus(u8 bus, u8 device, u8 function)
 {
 	return (pci_read32_config(bus, device, function, 0x18) >> 0x8) & 0xFF;
 }
+
 
 static void add_device(u8 bus, u8 device, u8 function, u16 vendor_id)
 {
