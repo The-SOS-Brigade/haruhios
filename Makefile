@@ -1,16 +1,16 @@
-ARCH ?= i686
-SRCARCH := ARCH
+ARCH		?= x86
+TOOLCHAIN	?= i686-elf-
+SRCARCH		:= $(ARCH)
 
 ifeq ($(ARCH),x86_64)
 	SRCARCH := x86
-	AS	:= $(ARCH)-elf-as
-	GCC	:= $(ARCH)-elf-gcc
-	LD	:= $(ARCH)-elf-ld
-else ifeq ($(ARCH),i686)
-	SRCARCH := x86
-	AS	:= $(ARCH)-elf-as
-	GCC	:= $(ARCH)-elf-gcc
-	LD	:= $(ARCH)-elf-ld
+	AS	:= $(TOOLCHAIN)as
+	GCC	:= $(TOOLCHAIN)gcc
+	LD	:= $(TOOCHAIN)ld
+else ifeq ($(ARCH),x86)
+	AS	:= $(TOOLCHAIN)as
+	GCC	:= $(TOOLCHAIN)gcc
+	LD	:= $(TOOLCHAIN)ld
 else
 	ERR	:= $(error Invalid arch)
 endif
@@ -31,6 +31,7 @@ BUILDDIR	:= build
 
 MKDIR		:= mkdir
 FIND		:= find
+DOXYGEN		?= doxygen
 
 PHONY := __all
 __all: build
@@ -52,9 +53,15 @@ ifneq ($(shell id -u), 0)
 endif
 	$(MAKE) -C arch/$(SRCARCH) $@
 
+PHONY += htmldocs
+htmldocs:
+	$(DOXYGEN) docs/Doxyfile
+	$(MAKE) -C docs html
+
 PHONY += clean
 clean:
 	$(MAKE) -C arch/$(SRCARCH) $@
+	$(RM) -rf docs/_build
 	$(FIND) . -name '*.o' -delete
 	$(FIND) . -name '*.i' -delete
 
