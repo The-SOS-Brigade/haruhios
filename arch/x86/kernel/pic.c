@@ -59,3 +59,29 @@ void pic_eoi(u8 irq)
 	outb(PIC0_CMD, PIC_EOI);
 }
 
+void pic_set_mask(u8 line)
+{
+	u8 imr;
+	if (line < 8) {
+		imr = inb(PIC0_DATA);
+		outb(PIC0_DATA, imr | (1 << line));
+	} else if (line < 16) {
+		imr = inb(PIC1_DATA);
+		line -= 8;
+		outb(PIC1_DATA, imr | (1 << line));
+	}
+}
+
+void pic_clear_mask(u8 line)
+{
+	u8 imr;
+	if (line < 8) {
+		imr = inb(PIC0_DATA);
+		outb(PIC0_DATA, imr | (1 << line));
+	} else if (line < 16) {
+		imr = inb(PIC1_DATA);
+		line -= 8;
+		outb(PIC1_DATA, imr & ~(1 << line));
+	}
+}
+

@@ -57,6 +57,10 @@ void pic_remap(u8 offset0, u8 offset1);
 u16 pic_irr(void);
 u16 pic_isr(void);
 void pic_eoi(u8 irq);
+void pic_set_mask(u8 line);
+void pic_clear_mask(u8 line);
+void pic_set_all_masks(void);
+void pic_clear_all_masks(void);
 
 #endif
 

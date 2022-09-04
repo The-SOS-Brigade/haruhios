@@ -19,6 +19,7 @@ void interrupt_init(void)
 {
 	prepare_gates();
 	pic_remap(INTEL_TRAPS, INTEL_TRAPS+8);
+	pic_clear_all_masks();
 	register_int(_TASK(0));
 	register_int(_TASK(1));
 	register_int(_TASK(3));
