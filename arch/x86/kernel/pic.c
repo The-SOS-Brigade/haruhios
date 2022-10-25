@@ -77,11 +77,23 @@ void pic_clear_mask(u8 line)
 	u8 imr;
 	if (line < 8) {
 		imr = inb(PIC0_DATA);
-		outb(PIC0_DATA, imr | (1 << line));
+		outb(PIC0_DATA, imr & ~(1 << line));
 	} else if (line < 16) {
 		imr = inb(PIC1_DATA);
 		line -= 8;
 		outb(PIC1_DATA, imr & ~(1 << line));
 	}
+}
+
+void pic_set_all_masks(void)
+{
+	outb(PIC0_DATA, 0);
+	outb(PIC1_DATA, 0);
+}
+
+void pic_clear_all_masks(void)
+{
+	outb(PIC0_DATA, 0xff);
+	outb(PIC1_DATA, 0xff);
 }
 
