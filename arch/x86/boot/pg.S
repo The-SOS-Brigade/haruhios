@@ -9,7 +9,7 @@ pg_idmap:
 	movl %edi, %eax
 	addl $0x1000, %eax
 	push %eax
-	orl $0b111, %eax
+	orl $0b011, %eax
 	movl $0x400, %ecx
 
 	cld
@@ -20,7 +20,7 @@ pg_idmap:
 	loop .Lidmap_0
 
 	popl %edi
-	movl $0b111, %eax
+	movl $0b011, %eax
 	movl $0x100000, %ecx
 .Lidmap_1:
 	stosl
@@ -35,7 +35,7 @@ pg_mapk2hh:
 
 	call pg_idmap
 	movl $__kernel_start_phys, %eax
-	orl $0b111, %eax
+	orl $0b011, %eax
 	movl $0x40000, %ecx
 	addl $0x301000, %edi
 
