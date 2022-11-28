@@ -1,5 +1,6 @@
 #include <haruhi/memory/kheap.h>
 #include <haruhi/string.h>
+#include <haruhi/panic.h>
 
 struct heap_alloc_desc kheap;
 
@@ -33,6 +34,7 @@ void *kzalloc(size_t size)
 
 void kfree(void *ptr)
 {
-	return free(&kheap, ptr);
+	if (free(&kheap, ptr) < 0)
+		panic("kfree");
 }
 

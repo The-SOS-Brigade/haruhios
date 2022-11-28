@@ -18,7 +18,7 @@ struct heap_alloc_desc {
 };
 
 void *malloc(struct heap_alloc_desc *heap, size_t size);
-void free(struct heap_alloc_desc *heap, void *ptr);
+int free(struct heap_alloc_desc *heap, void *ptr);
 
 #endif
 

@@ -60,9 +60,13 @@ void *malloc(struct heap_alloc_desc *heap, size_t size)
 	return ptr;
 }
 
-void free(struct heap_alloc_desc *heap, void *ptr)
+int free(struct heap_alloc_desc *heap, void *ptr)
 {
 	size_t blk_start;
+
+	if (ptr < heap->base ||
+	    ptr >= (heap->base + heap->total_entries * heap->blk_size))
+		return -1;
 
 	do {
 		blk_start = heap_get_blk_offset(heap, ptr);
@@ -76,5 +80,7 @@ void free(struct heap_alloc_desc *heap, void *ptr)
 		blk = heap->blk[i];
 		heap->blk[i++] = HEAP_BLOCK_FREE;
 	} while (~blk & HEAP_BLOCK_END);
+
+	return 0;
 }
 
