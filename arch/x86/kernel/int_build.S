@@ -37,3 +37,5 @@ BUILDINT irq_task9, cga_irq_handler
 BUILDINT irq_task12, ps2_irq_handler
 BUILDINT irq_task13, fpu_irq_handler
 
+BUILDINT int_syscall, syscall_int_handler
+

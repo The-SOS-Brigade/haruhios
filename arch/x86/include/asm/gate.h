@@ -15,6 +15,9 @@
 #define INTEL_TRAPS 0x20
 #define FREE_GATES (IDT_GATES - INTEL_TRAPS)
 
+#define DPL_KERN	0
+#define DPL_USER	3
+
 struct gate_struct {
 	u16 offset0;
 	u16 segment;

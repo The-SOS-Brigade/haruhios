@@ -1,3 +1,4 @@
+#include <haruhi/console.h>
 #include <asm/pic.h>
 #include <asm/io.h>
 
@@ -50,5 +51,10 @@ void ps2_irq_handler(void)
 void fpu_irq_handler(void)
 {
 	pic_eoi(IRQ_TASK_FPU);
+}
+
+void syscall_int_handler(void)
+{
+	printk("syscall!\n");
 }
 

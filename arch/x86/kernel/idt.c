@@ -12,10 +12,10 @@ static void register_all_interrupts(void)
 	size_t i;
 
 	for (i = 0; i < INTEL_TRAPS; ++i)
-		register_int(i, int_default, TRAP_GATE);
+		register_int(i, int_default, TRAP_GATE, DPL_KERN);
 
 	for (; i < FREE_GATES; ++i)
-		register_int(i, int_default, INT_GATE);
+		register_int(i, int_default, INT_GATE, DPL_KERN);
 }
 
 void prepare_gates(void)
@@ -25,7 +25,7 @@ void prepare_gates(void)
 			.offset0 = 0,
 			.segment = CODE_SEG,
 			.type = TRAP_GATE,
-			.dpl = 3,
+			.dpl = DPL_KERN,
 			.p = GATE_ABSENT,
 			.offset1 = 0
 		};
@@ -39,11 +39,12 @@ void prepare_gates(void)
 	load_idt(idtr);
 }
 
-void register_int(size_t entry, void *addr, u8 type)
+void register_int(size_t entry, void *addr, u8 type, u8 dpl)
 {
 	idt_gates[entry].offset0 = (u32)addr & 0xFFFF;
 	idt_gates[entry].offset1 = (u32)addr >> 16;
 	idt_gates[entry].type = type;
 	idt_gates[entry].p = GATE_PRESENT;
+	idt_gates[entry].dpl = dpl;
 }
 

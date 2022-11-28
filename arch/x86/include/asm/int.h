@@ -18,7 +18,7 @@ static inline void disable_interrupts(void)
 	__asm__ __volatile__("cli");
 }
 
-void register_int(size_t entry, void *addr, u8 type);
+void register_int(size_t entry, void *addr, u8 type, u8 dpl);
 
 #endif
 
