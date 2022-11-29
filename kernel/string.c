@@ -139,3 +139,31 @@ char *itoa(int value, char *str, char radix)
 	return str;
 }
 
+char *utoa(unsigned int value, char *str, char radix)
+{
+	if (radix < 2 || radix > 36) {
+		*str = '\0';
+		return str;
+	}
+
+	char *ptr = str, *ptr1 = str, tmp_char;
+	int tmp_value;
+
+	do {
+		tmp_value = value % radix;
+		value /= radix;
+		*ptr++ = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[abs(tmp_value)];
+
+	} while (value);
+
+	*ptr-- = '\0';
+
+	while (ptr1 < ptr) {
+		tmp_char = *ptr;
+		*ptr--= *ptr1;
+		*ptr1++ = tmp_char;
+	}
+
+	return str;
+}
+

@@ -12,7 +12,8 @@ char *strstr(const char *str, const char *substr);
 size_t strcnt(const char *str, const char *substr);
 char *strrpl(char *str, const char *substr, const char *newsubstr);
 int strncmp(const char *str0, const char *str1, size_t n);
-char *itoa(int n, char *str, char radix);
+char *itoa(int value, char *str, char radix);
+char *utoa(unsigned int value, char *str, char radix);
 
 #endif
 

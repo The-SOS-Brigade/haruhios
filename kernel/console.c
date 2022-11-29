@@ -53,7 +53,7 @@ void printk(char *str, ...)
 		case 'x':
 		{
 			unsigned int tmp = va_arg(args, unsigned int);
-			strrpl(str, PRINTK_FMT_PREFIX"x", itoa(tmp, itoa_buffer, 16));
+			strrpl(str, PRINTK_FMT_PREFIX"x", utoa(tmp, itoa_buffer, 16));
 			break;
 		}
 		default:
