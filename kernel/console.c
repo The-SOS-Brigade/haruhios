@@ -51,8 +51,11 @@ void printk(char *str, ...)
 			break;
 		}
 		case 'x':
-			va_arg(args, int);
+		{
+			unsigned int tmp = va_arg(args, unsigned int);
+			strrpl(str, PRINTK_FMT_PREFIX"x", itoa(tmp, itoa_buffer, 16));
 			break;
+		}
 		default:
 			break;
 		}
