@@ -4,7 +4,7 @@ OUTPUT (BOOT.SYS)
 
 SECTIONS {
 
-	__kernel_start_phys = 0x100000;
+	__kernel_start_phys = 0x400000;
 	__kernel_start = 0xC0000000;
 	kernel_entry = __kernel_start;
 

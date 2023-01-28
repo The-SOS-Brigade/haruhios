@@ -5,7 +5,7 @@ OUTPUT (KERNEL.SYS)
 SECTIONS {
 	. = 0xC0000000;
 
-	__kernel_start_phys = 0x100000;
+	__kernel_start_phys = 0x400000;
 	__kernel_start = .;
 
 	.text :  {

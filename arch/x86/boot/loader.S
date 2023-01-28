@@ -18,6 +18,7 @@ _loader:
 .code32
 .extern __kernel_start
 .extern kernel_entry
+.extern pg_enable_pse
 .extern pg_mapk2hh
 
 #include <asm/bpb.h>
@@ -72,6 +73,7 @@ load_kernel:
 	movl $PGTABADDR, %edi
 
 	call pg_mapk2hh
+	call pg_enable_pse
 
 	movl $PGTABADDR, %eax
 	call mmu_load_pagedir
