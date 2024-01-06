@@ -3,14 +3,22 @@
 
 #include <haruhi/types.h>
 
-void pci_init(void);
+extern void pci_init(void);
 
 u8 get_pci_class(u8 bus, u8 device, u8 function);
 u8 get_pci_subclass(u8 bus, u8 device, u8 function);
 u8 get_pci_header_type(u8 bus, u8 device, u8 function);
 u8 get_pci_progif(u8 bus, u8 device, u8 function);
 u8 get_bridge_secondary_bus(u8 bus, u8 device, u8 function);
-u32 pci_read32_config(u8 bus, u8 device, u8 function, u8 offset);
+void pci_map(void (*fp)(u8, u8, u8));
+void pci_map_print_handler(u8 bus, u8 device, u8 function);
+void pci_enumerate_bus(u8 bus);
+extern u32 pci_read32_config(u8 bus, u8 device, u8 function, u8 offset);
+
+static inline void enumerate_pci(void)
+{
+	pci_enumerate_bus(0);
+}
 
 struct pci_device {
 	u8 bus;
