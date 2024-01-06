@@ -20,7 +20,7 @@ void *memset(void *dest, int c, size_t n)
 	char *ptr = (char *)dest;
 
 	for (i = 0; i < n; ++i)
-		ptr[n] = (char)c;
+		ptr[i] = (char)c;
 
 	return ptr;
 }
