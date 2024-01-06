@@ -58,7 +58,7 @@ install_loop:
 	$(MOUNT) -tvfat $(LOOPDEV) $(abs_srctree)/mnt
 	$(CP) $(BUILDDIR)/KERNEL.SYS $(abs_srctree)/mnt
 	$(CP) $(BUILDDIR)/BOOT.SYS $(abs_srctree)/mnt
-
+	-sync
 
 PHONY += clean
 clean:
