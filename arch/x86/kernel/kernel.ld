@@ -37,4 +37,8 @@ SECTIONS {
 
 	__pgt_end_phys = __pgt_start_phys + 0x401000;
 	__pgt_end = .;
+
+	. = . + 0xC8000;
+
+	PROVIDE(__kheap_start = .);
 }
